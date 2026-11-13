@@ -1,0 +1,26 @@
+{
+  "name": "brief-6-mizane",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./input.css -o ./style.css --watch",
+    "build": "npx @tailwindcss/cli -i ./input.css -o ./style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustRihab/Brief-6-Mizane.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JustRihab/Brief-6-Mizane/issues"
+  },
+  "homepage": "https://github.com/JustRihab/Brief-6-Mizane#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.5",
+    "tailwindcss": "^4.3.5"
+  }
+}
