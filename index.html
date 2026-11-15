@@ -33,25 +33,10 @@
                 <p class="text-gray-500 mt-2 text-sm md:text-base">Consultez les derniers prix de l'or et de l'argent.</p>
             </div>
             <p id="message-erreur" class="hidden text-red-700 text-sm mb-4"></p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center text-2xl">🥇</div>
-                        <h3 class="text-lg font-bold text-[#071D36]">Or</h3>
-                    </div>
-                    <p class="text-sm text-gray-500">Prix actuel</p>
-                    <p id="prix-or" class="text-2xl font-bold text-[#071D36] mt-1">--</p>
-                    <p id="statut-or" class="text-sm text-gray-400 mt-2">En attente des données API</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-2xl">🥈</div>
-                        <h3 class="text-lg font-bold text-[#071D36]">Argent</h3>
-                    </div>
-                    <p class="text-sm text-gray-500">Prix actuel</p>
-                    <p id="prix-argent" class="text-2xl font-bold text-[#071D36] mt-1">--</p>
-                    <p id="statut-argent" class="text-sm text-gray-400 mt-2">En attente des données API</p>
-                </div>
+            <div id="metaux-container" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+            <div id="infos-marche" class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-yellow-100 border border-gray-200 rounded-xl px-4 py-3">
+                <p id="statut-marche" class="text-sm font-semibold"></p>
+                <p id="date-mise-a-jour" class="text-sm text-gray-500"></p>
             </div>
         </section>
         <section class="mt-12 mb-10">
