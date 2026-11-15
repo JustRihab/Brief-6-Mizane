@@ -1,7 +1,7 @@
 const grammesParOnce = 31.1035;
 
-export function convertirEnMadParGramme(Price, fxRate) {
-    return (Price * fxRate) / grammesParOnce;
+export function convertirEnDeviseParGramme(price, fxRate) {
+    return (price * fxRate) / grammesParOnce;
 }
 
 export function calculerVariation(points, fxRate) {
@@ -11,7 +11,7 @@ export function calculerVariation(points, fxRate) {
     const dernierPoint = points[points.length - 1];
     const precedentPoint = points[points.length - 2];
     const variationUSD = dernierPoint.c - precedentPoint.c;
-    const variation = convertirEnMadParGramme(variationUSD, fxRate);
+    const variation = convertirEnDeviseParGramme(variationUSD, fxRate);
     const pourcentage = (variationUSD / precedentPoint.c) * 100;
     let direction = "stable";
     if (variationUSD > 0) {

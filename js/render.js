@@ -8,7 +8,7 @@ export function afficherErreur(message) {
     messageErreur.classList.remove("hidden");
 }
 
-export function cardContainer(nomMetal, prixMetal, variationData) {
+export function cardContainer(nomMetal, prixMetal, variationData, currency) {
     const div = document.createElement("div");
     const divIntern = document.createElement("div");
     const divIcone = document.createElement("div");
@@ -37,7 +37,7 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
     }
     h3.textContent = nomMetal;
     pPrixA.textContent = "Prix actuel";
-    pPrix.textContent = prixMetal + " MAD";
+    pPrix.textContent = prixMetal.toFixed(2) + " " + currency;
     statut.textContent = "Prix actualisé";
     if (variationData) {
         let fleche = "→";
@@ -50,7 +50,7 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
             fleche = "↓";
             couleur = "text-red-700";
         }
-        pVariation.textContent = fleche + " " + variationData.variation.toFixed(2) + " MAD (" + variationData.pourcentage.toFixed(2) + "%)";
+        pVariation.textContent = fleche + " " + variationData.variation.toFixed(2) + " " + currency + " (" + variationData.pourcentage.toFixed(2) + "%)";
         pVariation.className = "text-sm font-semibold mt-2 " + couleur;
     }
     divIntern.append(divIcone, h3);
@@ -58,11 +58,11 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
     metauxContainer.append(div);
 }
 
-export function afficherPrix(metaux) {
+export function afficherPrix(metaux, currency) {
     messageErreur.classList.add("hidden");
     metauxContainer.textContent = "";
     metaux.forEach(metal => {
-        cardContainer(metal.nom, metal.prix, metal.variation)
+        cardContainer(metal.nom, metal.prix, metal.variation, currency)
     });
 }
 
