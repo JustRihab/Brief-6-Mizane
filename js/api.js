@@ -1,9 +1,9 @@
-const API_URL = "https://xaus.com/api/v1/spot?currency=MAD&unit=gram";
+const API_URL = "https://xaus.com/api/v1/spot";
 const HISTORICAL_API_URL = "https://xaus.com/api/v1/chart";
 
-export async function getCurrentPrices() {
+export async function getCurrentPrices(currency) {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}?currency=${currency}&unit=gram`);
         if (!response.ok) {
             throw new Error("Erreur serveur");
         }
@@ -16,9 +16,13 @@ export async function getCurrentPrices() {
     }
 }
 
-export async function getHistoricalPrices(symbol) {
+export async function getHistoricalPrices(symbol, period) {
     try {
-        const response = await fetch(`${HISTORICAL_API_URL}?symbol=${symbol}&range=5d&interval=1d`);
+        let range = "5d";
+        if (period === "30") {
+            range = "1mo";
+        }
+        const response = await fetch(`${HISTORICAL_API_URL}?symbol=${symbol}&range=${range}&interval=1d`);
         if (!response.ok) {
             throw new Error("Erreur serveur");
         }

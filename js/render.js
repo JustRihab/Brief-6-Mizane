@@ -2,13 +2,14 @@ const messageErreur = document.getElementById("message-erreur");
 const metauxContainer = document.getElementById("metaux-container");
 const statutMarche = document.getElementById("statut-marche");
 const dateMiseAJour = document.getElementById("date-mise-a-jour");
+const historiqueGraphique = document.getElementById("historique-graphique");
 
 export function afficherErreur(message) {
     messageErreur.textContent = message;
     messageErreur.classList.remove("hidden");
 }
 
-export function cardContainer(nomMetal, prixMetal, variationData) {
+export function cardContainer(nomMetal, prixMetal, variationData, currency) {
     const div = document.createElement("div");
     const divIntern = document.createElement("div");
     const divIcone = document.createElement("div");
@@ -37,7 +38,7 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
     }
     h3.textContent = nomMetal;
     pPrixA.textContent = "Prix actuel";
-    pPrix.textContent = prixMetal + " MAD";
+    pPrix.textContent = prixMetal.toFixed(2) + " " + currency;
     statut.textContent = "Prix actualisé";
     if (variationData) {
         let fleche = "→";
@@ -50,7 +51,7 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
             fleche = "↓";
             couleur = "text-red-700";
         }
-        pVariation.textContent = fleche + " " + variationData.variation.toFixed(2) + " MAD (" + variationData.pourcentage.toFixed(2) + "%)";
+        pVariation.textContent = fleche + " " + variationData.variation.toFixed(2) + " " + currency + " (" + variationData.pourcentage.toFixed(2) + "%)";
         pVariation.className = "text-sm font-semibold mt-2 " + couleur;
     }
     divIntern.append(divIcone, h3);
@@ -58,11 +59,11 @@ export function cardContainer(nomMetal, prixMetal, variationData) {
     metauxContainer.append(div);
 }
 
-export function afficherPrix(metaux) {
+export function afficherPrix(metaux, currency) {
     messageErreur.classList.add("hidden");
     metauxContainer.textContent = "";
     metaux.forEach(metal => {
-        cardContainer(metal.nom, metal.prix, metal.variation)
+        cardContainer(metal.nom, metal.prix, metal.variation, currency)
     });
 }
 
@@ -71,3 +72,47 @@ export function afficherInfosMarche(dataState) {
     dateMiseAJour.textContent = new Date(dataState.as_of).toLocaleString("fr-FR");
 }
    
+export function afficherHistorique(points) {
+    historiqueGraphique.textContent = "";
+    historiqueGraphique.classList.add("overflow-x-auto");
+    if (points.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "Aucune donnée historique disponible.";
+        message.className = "text-sm text-gray-500";
+        historiqueGraphique.append(message);
+        return;
+    }
+    const prix = points.map(point => point.c);
+    const prixMin = Math.min(...prix);
+    const prixMax = Math.max(...prix);
+    const barresContainer = document.createElement("div");
+    barresContainer.className = "flex items-end gap-3 h-52 w-max min-w-full";
+    points.forEach(point => {
+        const colonne = document.createElement("div");
+        colonne.className = "flex flex-col items-center justify-end gap-2 flex-none h-full";
+        const barre = document.createElement("div");
+        barre.className = "bg-[#D99A16] w-3 flex-none rounded-t-lg";
+        let hauteur;
+        if (prixMax === prixMin) {
+            hauteur = 50;
+        }
+        else {
+            hauteur = ((point.c - prixMin) / (prixMax - prixMin)) * 100;
+        }
+        if (hauteur < 5) {
+            hauteur = 5;
+        }
+        // style.height js property used to set the bar's CSS height
+        barre.style.height = (hauteur * 1.5 + 10) + "px";
+        const date = document.createElement("p");
+        const dateComplete = new Date(point.t * 1000);
+        date.textContent = dateComplete.toLocaleDateString("fr-FR", {
+            day: "2-digit",
+            month: "2-digit"
+        });
+        date.className = "text-xs text-gray-500";
+        colonne.append(barre, date);
+        barresContainer.append(colonne);
+    });
+    historiqueGraphique.append(barresContainer);
+}
