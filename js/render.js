@@ -5,10 +5,24 @@ const dateMiseAJour = document.getElementById("date-mise-a-jour");
 const historiqueGraphique = document.getElementById("historique-graphique");
 const valeurEstimee = document.getElementById("valeur-estimee");
 const erreurPoids = document.getElementById("erreur-poids");
+const messageSucces = document.getElementById("message-succes");
+const reessayerButton = document.getElementById("reessayer");
 
 export function afficherErreur(message) {
+    messageSucces.classList.add("hidden");
     messageErreur.textContent = message;
     messageErreur.classList.remove("hidden");
+    reessayerButton.classList.remove("hidden");
+}
+
+export function afficherSucces(message) {
+    messageErreur.classList.add("hidden");
+    messageSucces.textContent = message;
+    messageSucces.classList.remove("hidden");
+    setTimeout(function () {
+        messageSucces.classList.add("hidden");
+    }, 3000);
+    reessayerButton.classList.add("hidden");
 }
 
 export function cardContainer(nomMetal, prixMetal, variationData, currency) {
@@ -63,6 +77,7 @@ export function cardContainer(nomMetal, prixMetal, variationData, currency) {
 
 export function afficherPrix(metaux, currency) {
     messageErreur.classList.add("hidden");
+    messageSucces.classList.add("hidden");
     metauxContainer.textContent = "";
     metaux.forEach(metal => {
         cardContainer(metal.nom, metal.prix, metal.variation, currency)
@@ -70,7 +85,6 @@ export function afficherPrix(metaux, currency) {
 }
 
 export function afficherInfosMarche(dataState) {
-    statutMarche.textContent = dataState.status;
     dateMiseAJour.textContent = new Date(dataState.as_of).toLocaleString("fr-FR");
 }
    
