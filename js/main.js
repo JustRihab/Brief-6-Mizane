@@ -1,6 +1,6 @@
 import { getCurrentPrices, getHistoricalPrices } from "./api.js";
 import { convertirEnDeviseParGramme, calculerVariation, calculerValeurEstimee } from "./calculs.js";
-import { afficherPrix, afficherErreur, afficherInfosMarche, afficherHistorique, afficherValeurEstimee, afficherErreurPoids } from "./render.js";
+import { afficherPrix, afficherErreur, afficherInfosMarche, afficherHistorique, afficherValeurEstimee, afficherErreurPoids, afficherSucces } from "./render.js";
 import { sauvegarderDevise, chargerDevise } from "./storage.js";
 
 const currencySelect = document.getElementById("currency");
@@ -11,14 +11,23 @@ const poidsInput = document.getElementById("poids");
 const boutonCalculer = document.getElementById("calculer-valeur");
 const valeurEstimee = document.getElementById("valeur-estimee");
 const erreurPoids = document.getElementById("erreur-poids");
+const messageChargement = document.getElementById("message-chargement")
+const actualiserButton = document.getElementById("actualiser");
+const reessayerButton = document.getElementById("reessayer");
+const boutonsRequete = [ actualiserButton, reessayerButton, currencySelect, historiqueMetal, historiquePeriode ];
 let prixOrActuel = null;
 let prixArgentActuel = null;
 const savedCurrency = chargerDevise();
 if (savedCurrency) {
     currencySelect.value = savedCurrency;
 }
+let dernierRequete = null;
 
 async function init() {
+    messageChargement.classList.remove("hidden");
+    boutonsRequete.forEach(function(bouton) {
+        bouton.disabled = true;
+    });
     try {
         const currency = currencySelect.value;
         const data = await getCurrentPrices(currency);
@@ -35,22 +44,86 @@ async function init() {
         ];
         afficherPrix(metaux, currency);
         afficherInfosMarche(data.data_state);
+        afficherSucces("Les données ont été chargées avec succès.");
     }
     catch (error) {
-        afficherErreur("Impossible de charger les prix. Vérifier votre connexion internet.");
+        dernierRequete = init;
+        if (error.type === "offline") {
+            afficherErreur("Vous êtes hors ligne. Vérifiez votre connexion internet.");
+        }
+        else if (error.type === "network") {
+            afficherErreur("Erreur réseau. Impossible de contacter le serveur.");
+        }
+        else if (error.type === "http") {
+            afficherErreur("Erreur HTTP : " + error.status);
+        }
+        else if (error.type === "quota") {
+            afficherErreur("Quota API dépassé. Réessayez plus tard.");
+        }
+        else if (error.type === "json") {
+            afficherErreur("La réponse du serveur est illisible.");
+        }
+        else {
+            afficherErreur("Une erreur inattendue est survenue.");
+        }  
+    }
+    finally {
+        messageChargement.classList.add("hidden");
+        boutonsRequete.forEach(function(bouton) {
+            bouton.disabled = false;
+        });
     }
 }
 init();
 
+actualiserButton.addEventListener("click", function() {
+    init();
+});
+
+reessayerButton.addEventListener("click", function() {
+    if (dernierRequete !== null) {
+        dernierRequete();
+    };
+});
+
 async function chargerHistorique() {
-    const metal = historiqueMetal.value;
-    const period = historiquePeriode.value;
-    let symbol = "silver";
-    if (metal === "gold") {
-        symbol = "xau";
-    }
+    historiqueMetal.disabled = true;
+    historiquePeriode.disabled = true;
+    try {
+        const metal = historiqueMetal.value;
+        const period = historiquePeriode.value;
+        let symbol = "silver";
+        if (metal === "gold") {
+            symbol = "xau";
+        }
     const historique = await getHistoricalPrices(symbol, period);
     afficherHistorique(historique.points);
+    }
+    catch (error) {
+        dernierRequete = chargerHistorique;
+        if (error.type === "offline") {
+            afficherErreur("Vous êtes hors ligne. Vérifiez votre connexion internet.");
+        }
+        else if (error.type === "network") {
+            afficherErreur("Erreur réseau. Impossible de contacter le serveur.");
+        }
+        else if (error.type === "http") {
+            afficherErreur("Erreur HTTP : " + error.status);
+        }
+        else if (error.type === "quota") {
+            afficherErreur("Quota API dépassé. Réessayez plus tard.");
+        }
+        else if (error.type === "json") {
+            afficherErreur("La réponse du serveur est illisible.");
+        }
+        else {
+            afficherErreur("Une erreur inattendue est survenue.");
+        }
+    }
+    finally {
+        historiqueMetal.disabled = false;
+        historiquePeriode.disabled = false;
+    }
 }
 
 historiqueMetal.addEventListener("change", chargerHistorique);
