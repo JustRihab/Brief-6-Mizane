@@ -3,6 +3,8 @@ const metauxContainer = document.getElementById("metaux-container");
 const statutMarche = document.getElementById("statut-marche");
 const dateMiseAJour = document.getElementById("date-mise-a-jour");
 const historiqueGraphique = document.getElementById("historique-graphique");
+const valeurEstimee = document.getElementById("valeur-estimee");
+const erreurPoids = document.getElementById("erreur-poids");
 
 export function afficherErreur(message) {
     messageErreur.textContent = message;
@@ -115,4 +117,14 @@ export function afficherHistorique(points) {
         barresContainer.append(colonne);
     });
     historiqueGraphique.append(barresContainer);
+}
+
+export function afficherValeurEstimee(valeur, currency) {
+    const resultat = valeur.toFixed(2) + " " + currency;
+    valeurEstimee.textContent = resultat;
+}
+
+export function afficherErreurPoids(message) {
+    erreurPoids.textContent = message;
+    erreurPoids.classList.remove("hidden");
 }
