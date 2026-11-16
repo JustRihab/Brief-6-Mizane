@@ -22,3 +22,7 @@ export function calculerVariation(points, fxRate) {
     }
     return { variation, pourcentage, direction};
 }
+
+export function calculerValeurEstimee(poids, prixParGramme) {
+    return poids * prixParGramme;
+}
